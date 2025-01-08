@@ -1,4 +1,5 @@
 {{ block "index" . }}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -13,9 +14,9 @@
   </head>
 
   <body>
-    <div id="count">{{ template "count" .}}</div>
-
-    <button hx-target="#count" hx-post="/count">Count</button>
+    {{ template "form" .Form }}
+    <hr />
+    {{ template "display" .Data }}
   </body>
 </html>
 
@@ -23,4 +24,57 @@
 
 <!--  -->
 
-{{ block "count" . }} Count {{ .Count }} {{ end }}
+{{ block "form" . }}
+
+<form hx-post="/contacts" hx-swap="outerHTML">
+  name:
+  <input
+    {{
+    if
+    .Values.name
+    }}
+    value="{{.Values.name}}"
+    {{end}}
+    type="text"
+    name="name"
+  />
+
+  <br />
+  email:
+  <input
+    {{
+    if
+    .Values.email
+    }}
+    value="{{.Values.email}}"
+    {{end}}
+    type="text"
+    name="email"
+  />
+
+  {{if .Errors.email}}
+  <div style="color: red">{{.Errors.email}}</div>
+  {{end}}
+
+  <button type="submit">Submit</button>
+</form>
+
+{{ end }}
+
+<!--  -->
+
+{{ block "display" . }}
+
+<div id="display" style="display: flex; flex-direction: column">
+  {{ range .Contacts }}
+
+  <div>
+    Name: <span>{{ .Name }}</span>
+    <br />
+    Email: <span>{{ .Email }}</span>
+  </div>
+
+  {{ end }}
+</div>
+
+{{ end }}
